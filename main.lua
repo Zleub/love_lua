@@ -22,15 +22,22 @@ function love.load()
 	HC = require 'hardoncollider'
 	Collider = HC(16, collision_stop, on_collision)
 
-	player_radius = 16 / 2
-	player_start_x = love.window.getWidth() / 2 - player_radius / 2
-	player_start_y = love.window.getHeight() / 2 - player_radius / 2
+	Entities = require 'entities'
 
-	shape_player = Collider:addCircle(player_start_x, player_start_y, player_radius)
+	Entities:new('player')
+	player = Entities.player
 
-	shape_monster = Collider:addCircle(0, 0, player_radius)
+	player.radius = 16 / 2
+	player.start_x = love.window.getWidth() / 2 - player.radius / 2
+	player.start_y = love.window.getHeight() / 2 - player.radius / 2
+	player.shape = Collider:addCircle(player.start_x, player.start_y, player.radius)
 
-	shape_map = Collider:addCircle(love.window.getWidth() / 2, love.window.getHeight() / 2, love.window.getWidth() / 2 - player_radius * 2)
+	Entities:new('monster')
+	monster = Entities.monster
+
+	monster.shape = Collider:addCircle(0, 0, 8)
+
+	shape_map = Collider:addCircle(love.window.getWidth() / 2, love.window.getHeight() / 2, love.window.getWidth() / 2 - player.radius * 2)
 	shape_circle = Collider:addCircle(love.window.getWidth() / 2, love.window.getHeight() / 2, love.window.getHeight() / 2)
 
 	frame_nbr = 1
@@ -52,99 +59,99 @@ end
 
 function undashed_move(dt)
 	if love.keyboard.isDown("left") then
-		shape_player:move(-100 * dt, 0)
-		if shape_player:collidesWith(shape_map) == false then
-			shape_player:move(100 * dt, 0)
+		player.shape:move(-100 * dt, 0)
+		if player.shape:collidesWith(shape_map) == false then
+			player.shape:move(100 * dt, 0)
 		end
-		if shape_player:collidesWith(shape_monster) == true then
-			shape_player:move(100 * dt, 0)
+		if player.shape:collidesWith(monster.shape) == true then
+			player.shape:move(100 * dt, 0)
 		end
-		if shape_player:collidesWith(mouse) == true then
-			shape_player:move(100 * dt, 0)
+		if player.shape:collidesWith(mouse) == true then
+			player.shape:move(100 * dt, 0)
 		end
 	end
 
 	if love.keyboard.isDown("right") then
-		shape_player:move(100 * dt, 0)
-		if shape_player:collidesWith(shape_map) == false then
-			shape_player:move(-100 * dt, 0)
+		player.shape:move(100 * dt, 0)
+		if player.shape:collidesWith(shape_map) == false then
+			player.shape:move(-100 * dt, 0)
 		end
-		if shape_player:collidesWith(shape_monster) == true then
-			shape_player:move(-100 * dt, 0)
+		if player.shape:collidesWith(monster.shape) == true then
+			player.shape:move(-100 * dt, 0)
 		end
-		if shape_player:collidesWith(mouse) == true then
-			shape_player:move(-100 * dt, 0)
+		if player.shape:collidesWith(mouse) == true then
+			player.shape:move(-100 * dt, 0)
 		end
 	end
 
 	if love.keyboard.isDown("up") then
-		shape_player:move(0, -100 * dt)
-		if shape_player:collidesWith(shape_map) == false then
-			shape_player:move(0, 100 * dt)
+		player.shape:move(0, -100 * dt)
+		if player.shape:collidesWith(shape_map) == false then
+			player.shape:move(0, 100 * dt)
 		end
-		if shape_player:collidesWith(shape_monster) == true then
-			shape_player:move(0, 100 * dt)
+		if player.shape:collidesWith(monster.shape) == true then
+			player.shape:move(0, 100 * dt)
 		end
-		if shape_player:collidesWith(mouse) == true then
-			shape_player:move(-100 * dt, 0)
+		if player.shape:collidesWith(mouse) == true then
+			player.shape:move(-100 * dt, 0)
 		end
 	end
 
 	if love.keyboard.isDown("down") then
-		shape_player:move(0, 100 * dt)
-		if shape_player:collidesWith(shape_map) == false then
-			shape_player:move(0, -100 * dt)
+		player.shape:move(0, 100 * dt)
+		if player.shape:collidesWith(shape_map) == false then
+			player.shape:move(0, -100 * dt)
 		end
-		if shape_player:collidesWith(shape_monster) == true then
-			shape_player:move(0, -100 * dt)
+		if player.shape:collidesWith(monster.shape) == true then
+			player.shape:move(0, -100 * dt)
 		end
-		if shape_player:collidesWith(mouse) == true then
-			shape_player:move(-100 * dt, 0)
+		if player.shape:collidesWith(mouse) == true then
+			player.shape:move(-100 * dt, 0)
 		end
 	end
 end
 
 function dashed_move(dt)
 	if love.keyboard.isDown("left") then
-		shape_player:move(-750 * dt, 0)
+		player.shape:move(-750 * dt, 0)
 		mana = mana - 1
-		if shape_player:collidesWith(shape_map) == false then
-			shape_player:move(650 * dt, 0)
-			if shape_player:collidesWith(shape_map) == false then
-				shape_player:move(100 * dt, 0)
+		if player.shape:collidesWith(shape_map) == false then
+			player.shape:move(650 * dt, 0)
+			if player.shape:collidesWith(shape_map) == false then
+				player.shape:move(100 * dt, 0)
 			end
 		end
 	end
 
 	if love.keyboard.isDown("right") then
-		shape_player:move(750 * dt, 0)
+		player.shape:move(750 * dt, 0)
 		mana = mana - 1
-		if shape_player:collidesWith(shape_map) == false then
-			shape_player:move(-650 * dt, 0)
-			if shape_player:collidesWith(shape_map) == false then
-				shape_player:move(-100 * dt, 0)
+		if player.shape:collidesWith(shape_map) == false then
+			player.shape:move(-650 * dt, 0)
+			if player.shape:collidesWith(shape_map) == false then
+				player.shape:move(-100 * dt, 0)
 			end
 		end
 	end
 
 	if love.keyboard.isDown("up") then
-		shape_player:move(0, -750 * dt)
+		player.shape:move(0, -750 * dt)
 		mana = mana - 1
-		if shape_player:collidesWith(shape_map) == false then
-			shape_player:move(0, 650 * dt)
-			if shape_player:collidesWith(shape_map) == false then
-				shape_player:move(0, 100 * dt)
+		if player.shape:collidesWith(shape_map) == false then
+			player.shape:move(0, 650 * dt)
+			if player.shape:collidesWith(shape_map) == false then
+				player.shape:move(0, 100 * dt)
 			end
 		end
 	end
 
 	if love.keyboard.isDown("down") then
-		shape_player:move(0, 750 * dt)
+		player.shape:move(0, 750 * dt)
 		mana = mana - 1
-		if shape_player:collidesWith(shape_map) == false then
-			shape_player:move(0, -650 * dt)
-			if shape_player:collidesWith(shape_map) == false then
-				shape_player:move(0, -100 * dt)
+		if player.shape:collidesWith(shape_map) == false then
+			player.shape:move(0, -650 * dt)
+			if player.shape:collidesWith(shape_map) == false then
+				player.shape:move(0, -100 * dt)
 			end
 		end
 	end
@@ -170,15 +177,15 @@ function monster_move(dt, x_diff, y_diff)
 
 	if math.abs(x_diff) > math.abs(y_diff) then
 		if x_diff > 0 then
-			shape_monster:move(200 * dt, 0)
+			monster.shape:move(200 * dt, 0)
 		else
-			shape_monster:move(-200 * dt, 0)
+			monster.shape:move(-200 * dt, 0)
 		end
 	else
 		if y_diff > 0 then
-			shape_monster:move(0, 200 * dt)
+			monster.shape:move(0, 200 * dt)
 		else
-			shape_monster:move(0, -200 * dt)
+			monster.shape:move(0, -200 * dt)
 		end
 	end
 end
@@ -186,10 +193,10 @@ end
 function love.update(dt)
 	mouse:moveTo(love.mouse.getPosition())
 
-	shape_player_center_x, shape_player_center_y = shape_player:center()
-	shape_monster_center_x, shape_monster_center_y = shape_monster:center()
+	shape_player_center_x, shape_player_center_y = player.shape:center()
+	shape_monster_center_x, shape_monster_center_y = monster.shape:center()
 
-	if shape_monster:collidesWith(shape_player) == false then
+	if monster.shape:collidesWith(player.shape) == false then
 		monster_move(dt, shape_player_center_x - shape_monster_center_x, shape_player_center_y - shape_monster_center_y)
 	end
 
@@ -214,7 +221,7 @@ function love.draw()
 		shape_map:draw('line')
 		shape_circle:draw('line')
 		love.graphics.setColor(255,0,0)
-		shape_player:draw('fill')
+		player.shape:draw('fill')
 		love.graphics.setColor(255, 255, 255)
 
 		love.graphics.print("time: "..time, 0, 0)
@@ -228,13 +235,14 @@ function love.draw()
 		love.graphics.print("mouse_x: "..love.mouse.getX(), 0, 88)
 		love.graphics.print("mouse_y: "..love.mouse.getY(), 0, 99)
 		love.graphics.print("image_dimension: "..image_dimension, 0, 110)
+
 	end
 
-	shape_player_center_x, shape_player_center_y = shape_player:center()
-	shape_monster_center_x, shape_monster_center_y = shape_monster:center()
+	shape_player_center_x, shape_player_center_y = player.shape:center()
+	shape_monster_center_x, shape_monster_center_y = monster.shape:center()
 
 	mouse:draw("line")
 	love.graphics.draw(animation[math.floor(frame_nbr)], shape_player_center_x - (width / 2), shape_player_center_y - (height / 2))
-	shape_monster:draw()
+	monster.shape:draw()
 	love.graphics.print("mana: "..math.floor(mana), love.window.getWidth() - 100, 0)
 end
