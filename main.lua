@@ -264,6 +264,11 @@
 -- 	love.graphics.print("mana: "..math.floor(mana), love.window.getWidth() - 100, 0)
 -- end
 
+
+
+
+
+
 function data_print(data)
 	love.graphics.print(data, 0, i)
 	i = i + 11
@@ -309,9 +314,9 @@ function draw_map(layer)
 		m = 0
 		while i <= layer.width do
 			love.graphics.draw(Quadtileset[0], Quadtileset[layer.data[i + j * layer.height] ], m, n)
-			k = k + 1
 			m = m + 15
 			i = i + 1
+			k = k + 1
 		end
 		n = n + 15
 		j = j + 1
