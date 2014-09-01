@@ -287,7 +287,7 @@ function love.load()
 	pretty = require 'pl.pretty'
 	tablex = require 'pl.tablex'
 
-	map = require 'pokemap'
+	map = require 'truc'
 	tilesets = map.tilesets
 
 	layers = map.layers
@@ -313,7 +313,7 @@ function draw_map(layer)
 		i = 1
 		m = 0
 		while i <= layer.width do
-			love.graphics.draw(Quadtileset[0], Quadtileset[layer.data[i + j * layer.height] ], m, n)
+			love.graphics.draw(Quadtileset[0], Quadtileset[layer.data[k] ], m, n)
 			m = m + 15
 			i = i + 1
 			k = k + 1
