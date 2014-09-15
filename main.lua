@@ -1,273 +1,82 @@
+function insert(shapes, x, y, cell_size)
+	print("insert_new:")
+	x1, y1 = x, y
+	x2, y2 = 0, 0 - cell_size
+	for i = 1, 9 do
+		if i % 3 == 1 then
+			y2 = y2 + cell_size
+		-- end
+		-- if i / 3then
+			x2 = 0
+		end
+		print(table.getn(shapes) + 1)
+		print(x1 + x2..", "..y1 + y2..", "..cell_size)
+		table.insert(shapes, Collider:addRectangle(x1 + x2, y1 + y2, cell_size, cell_size))
+		x2 = x2 + cell_size
+	end
+end
+
 function love.load()
-	pretty = require 'pl.pretty'
-	tablex = require 'pl.tablex'
-
-	debug = 1
-
+	pretty = require('pl.pretty')
 	HC = require 'hardoncollider'
 	Collider = HC(16)
 
-	Entities = require 'entities'
+	shapes = {}
+	-- insert(shapes, 225, 225, 50)
+	-- insert(shapes, 150, 150, 100)
+	-- insert(shapes, 75, 75, 150)
+	insert(shapes, 225, 225, 50)
+	insert(shapes, 150, 150, 100)
+	insert(shapes, 75, 75, 150)
+	insert(shapes, 0, 0, 200)
 
-	Entities:new('player')
-	player = Entities.player
-	player.start_x = love.window.getWidth() / 2 - player.radius / 2
-	player.start_y = love.window.getHeight() / 2 - player.radius / 2
-	player.shape = Collider:addCircle(player.start_x, player.start_y, player.radius)
 
-	Entities:new('monster')
-	monster = Entities.monster
-	monster.shape = Collider:addCircle(0, 0, 8)
 
-	shape_map = Collider:addCircle(love.window.getWidth() / 2, love.window.getHeight() / 2, love.window.getWidth() / 2 - player.radius * 2)
-	shape_circle = Collider:addCircle(love.window.getWidth() / 2, love.window.getHeight() / 2, love.window.getHeight() / 2)
-
-	time = 0
-	frame_rate = 3
-	mana = 25
-	dash = 0
+	mouse = Collider:addCircle(0, 0, 5)
 end
 
-function undashed_move(dt)
-	if love.keyboard.isDown("left") then
-		player.shape:move(-100 * dt, 0)
-		if player.shape:collidesWith(shape_map) == false then
-			player.shape:move(100 * dt, 0)
-		end
-		if player.shape:collidesWith(monster.shape) == true then
-			player.shape:move(100 * dt, 0)
-		end
-	end
-
-	if love.keyboard.isDown("right") then
-		player.shape:move(100 * dt, 0)
-		if player.shape:collidesWith(shape_map) == false then
-			player.shape:move(-100 * dt, 0)
-		end
-		if player.shape:collidesWith(monster.shape) == true then
-			player.shape:move(-100 * dt, 0)
-		end
-	end
-
-	if love.keyboard.isDown("up") then
-		player.shape:move(0, -100 * dt)
-		if player.shape:collidesWith(shape_map) == false then
-			player.shape:move(0, 100 * dt)
-		end
-		if player.shape:collidesWith(monster.shape) == true then
-			player.shape:move(0, 100 * dt)
-		end
-	end
-
-	if love.keyboard.isDown("down") then
-		player.shape:move(0, 100 * dt)
-		if player.shape:collidesWith(shape_map) == false then
-			player.shape:move(0, -100 * dt)
-		end
-		if player.shape:collidesWith(monster.shape) == true then
-			player.shape:move(0, -100 * dt)
-		end
-	end
+function close_polygon_left(x10, y10, x20, y20, x30, y30, x40, y40, x11, y11, x21, y21, x31, y31, x41, y41)
+	print(x10, y10, x20, y20, x30, y30, x40, y40, x11, y11, x21, y21, x31, y31, x41, y41)
+	return x20, y20, x21, y21, x11, y11, x10, y10
 end
 
-function dashed_move(dt)
-	if love.keyboard.isDown("left") then
-		player.shape:move(-750 * dt, 0)
-		mana = mana - 1
-		if player.shape:collidesWith(shape_map) == false then
-			player.shape:move(650 * dt, 0)
-			if player.shape:collidesWith(shape_map) == false then
-				player.shape:move(100 * dt, 0)
-			end
-		end
-	end
-
-	if love.keyboard.isDown("right") then
-		player.shape:move(750 * dt, 0)
-		mana = mana - 1
-		if player.shape:collidesWith(shape_map) == false then
-			player.shape:move(-650 * dt, 0)
-			if player.shape:collidesWith(shape_map) == false then
-				player.shape:move(-100 * dt, 0)
-			end
-		end
-	end
-
-	if love.keyboard.isDown("up") then
-		player.shape:move(0, -750 * dt)
-		mana = mana - 1
-		if player.shape:collidesWith(shape_map) == false then
-			player.shape:move(0, 650 * dt)
-			if player.shape:collidesWith(shape_map) == false then
-				player.shape:move(0, 100 * dt)
-			end
-		end
-	end
-
-	if love.keyboard.isDown("down") then
-		player.shape:move(0, 750 * dt)
-		mana = mana - 1
-		if player.shape:collidesWith(shape_map) == false then
-			player.shape:move(0, -650 * dt)
-			if player.shape:collidesWith(shape_map) == false then
-				player.shape:move(0, -100 * dt)
-			end
-		end
-	end
+function close_polygon_right(x10, y10, x20, y20, x30, y30, x40, y40, x11, y11, x21, y21, x31, y31, x41, y41)
+	return x40, y40, x41, y41, x31, y31, x30, y30
 end
 
-function traditional_mapping(dt)
-	if love.keyboard.isDown("q") and mana > 0 then
-		dash = 1
-	else
-		dash = 0
-	end
+function get_collision()
+	local save = {}
+	for k,v in pairs(shapes) do
+		if k + 9 < table.getn(shapes) + 1 and v:collidesWith(mouse) and shapes[k + 9]:collidesWith(mouse) then
+			table.insert(save, v)
+			table.insert(save, shapes[k + 9])
 
-	if dash == 0 then
-		undashed_move(dt)
-	else
-		dashed_move(dt)
-	end
-end
+			x10, y10, x20, y20, x30, y30, x40, y40 = shapes[k]._polygon:unpack()
+			x11, y11, x21, y21, x31, y31, x41, y41 = shapes[k + 9]._polygon:unpack()
 
-function monster_move(dt, x_diff, y_diff)
-	x_diff = math.floor(x_diff / 10)
-	y_diff = math.floor(y_diff / 10)
-	test1 = x_diff
-	test2 = y_diff
+			-- close_polygon_left(shapes[k]._polygon:unpack(), shapes[k + 9]._polygon:unpack()))
+			-- close_polygon_right(shapes[k]._polygon:unpack(), shapes[k + 9]._polygon:unpack())
+			-- table.insert(save, Collider:addPolygon(close_polygon_left(shapes[k]._polygon:unpack(), shapes[k + 9]._polygon:unpack())))
+			-- table.insert(save, Collider:addPolygon(close_polygon_right(shapes[k]._polygon:unpack(), shapes[k + 9]._polygon:unpack())))
 
-
-	if math.abs(x_diff) > math.abs(y_diff) then
-		if x_diff > 0 then
-			monster.shape:move(200 * dt, 0)
-		else
-			monster.shape:move(-200 * dt, 0)
-		end
-	elseif math.abs(x_diff) < math.abs(y_diff) then
-		if y_diff > 0 then
-			monster.shape:move(0, 200 * dt)
-		else
-			monster.shape:move(0, -200 * dt)
-		end
-	else
-		if x_diff > 0 and y_diff > 0 then
-			monster.shape:move(200 * dt, 200 * dt)
-		elseif x_diff > 0 and y_diff < 0 then
-			monster.shape:move(200 * dt, -200 * dt)
-		elseif x_diff < 0 and y_diff > 0 then
-			monster.shape:move(-200 * dt, 200 * dt)
-		elseif x_diff < 0 and y_diff < 0 then
-			monster.shape:move(-200 * dt, -200 * dt)
+			table.insert(save, Collider:addPolygon(x20, y20, x21, y21, x11, y11, x10, y10))
+			table.insert(save, Collider:addPolygon(x40, y40, x41, y41, x31, y31, x30, y30))
+			break
 		end
 	end
+	return save
 end
 
 function love.update(dt)
-
-	if monster.shape:collidesWith(player.shape) == false then
-		monster_move(dt, player.shape_center_x - monster.shape_center_x, player.shape_center_y - monster.shape_center_y)
-	end
-
-	traditional_mapping(dt)
-
-	time = time + dt
-
-	Entities:update(dt)
-
-	if dash == 0 and mana < 100 then
-		mana = 100 -- mana + (dt * 6)
-	end
+	mouse:moveTo(love.mouse.getPosition())
+	save = get_collision()
+	-- pretty.dump(save)
 end
 
 function love.draw()
-	if debug == 1 then
-		shape_map:draw('line')
-		shape_circle:draw('line')
-		love.graphics.setColor(255,0,0)
-		player.shape:draw('fill')
-		love.graphics.setColor(255, 255, 255)
-
-
-		love.graphics.print("time: "..time, 0, 0)
-		love.graphics.print("shape_player_center_x: "..player.shape_center_x, 0, 22)
-		love.graphics.print("shape_player_center_y: "..player.shape_center_y, 0, 33)
-		love.graphics.print("shape_monster_center_x: "..monster.shape_center_x, 0, 44)
-		love.graphics.print("shape_monster_center_y: "..monster.shape_center_y, 0, 55)
-
-		love.graphics.print("FPS: " .. love.timer.getFPS(), 0, 77)
-
-		-- love.graphics.print("test1: "..test1, 200, 200)
-		-- love.graphics.print("test2: "..test2, 220, 220)
+	for k,v in pairs(save) do
+		v:draw('fill')
 	end
-
-	love.graphics.draw( player.frames[ math.floor(player.frames_cnt) ], player.shape_center_x - (player.frames_width / 2), player.shape_center_y - (player.frames_height / 2))
-
-	monster.shape:draw()
-	love.graphics.print("mana: "..math.floor(mana), love.window.getWidth() - 100, 0)
+	mouse:draw("line")
+	love.graphics.print(love.timer.getFPS())
 end
-
-
-
-
-
-
--- function data_print(data)
--- 	love.graphics.print(data, 0, i)
--- 	i = i + 11
--- end
-
--- function load_tilesets(data)
--- 	table.insert(images, love.graphics.newImage(data.image))
--- end
-
--- function print_images(data)
--- 	love.graphics.draw(data)
--- end
-
--- function love.load()
--- 	love.graphics.print("loading")
--- 	pretty = require 'pl.pretty'
--- 	tablex = require 'pl.tablex'
-
--- 	map = require 'truc'
--- 	tilesets = map.tilesets
-
--- 	layers = map.layers
-
--- 	-- images = {}
--- 	-- tablex.foreach(map.tilesets, load_tilesets)
--- 	Quadlist_mod = require 'Quadlist'
--- 	Quadtileset = Quadlist:new(tilesets[1])
-
--- end
-
--- function draw_map(layer)
--- 	local i
--- 	local j
--- 	local k
-
--- 	local m = 0
--- 	local n = 0
-
--- 	k = 1
--- 	j = 0
--- 	while j < layer.height do
--- 		i = 1
--- 		m = 0
--- 		while i <= layer.width do
--- 			love.graphics.draw(Quadtileset[0], Quadtileset[layer.data[k] ], m, n)
--- 			m = m + 15
--- 			i = i + 1
--- 			k = k + 1
--- 		end
--- 		n = n + 15
--- 		j = j + 1
--- 	end
--- end
-
--- function love.draw()
--- 	-- tablex.foreach(images, print_images)
-
--- 	-- love.graphics.print( pretty.write(images, '  ', 1) )
--- 	draw_map(layers[1])
--- end
