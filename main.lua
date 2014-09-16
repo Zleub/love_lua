@@ -25,14 +25,14 @@ function love.load()
 	-- insert(shapes, 225, 225, 50)
 	-- insert(shapes, 150, 150, 100)
 	-- insert(shapes, 75, 75, 150)
-	insert(shapes, 225, 225, 50)
+	insert(shapes, 187, 187, 75)
 	insert(shapes, 150, 150, 100)
 	insert(shapes, 75, 75, 150)
 	insert(shapes, 0, 0, 200)
 
 
 
-	mouse = Collider:addCircle(0, 0, 5)
+	shapes.mouse = Collider:addCircle(0, 0, 5)
 end
 
 function close_polygon_left(x10, y10, x20, y20, x30, y30, x40, y40, x11, y11, x21, y21, x31, y31, x41, y41)
@@ -46,29 +46,27 @@ end
 
 function get_collision()
 	local save = {}
-	for k,v in pairs(shapes) do
-		if k + 9 < table.getn(shapes) + 1 and v:collidesWith(mouse) and shapes[k + 9]:collidesWith(mouse) then
-			table.insert(save, v)
+	local k = 1
+
+	while k < table.getn(shapes) + 1 do
+		if k + 9 < table.getn(shapes) + 1 and shapes[k]:collidesWith(shapes.mouse) and shapes[k + 9]:collidesWith(shapes.mouse) then
+			table.insert(save, shapes[k])
 			table.insert(save, shapes[k + 9])
 
 			x10, y10, x20, y20, x30, y30, x40, y40 = shapes[k]._polygon:unpack()
 			x11, y11, x21, y21, x31, y31, x41, y41 = shapes[k + 9]._polygon:unpack()
 
-			-- close_polygon_left(shapes[k]._polygon:unpack(), shapes[k + 9]._polygon:unpack()))
-			-- close_polygon_right(shapes[k]._polygon:unpack(), shapes[k + 9]._polygon:unpack())
-			-- table.insert(save, Collider:addPolygon(close_polygon_left(shapes[k]._polygon:unpack(), shapes[k + 9]._polygon:unpack())))
-			-- table.insert(save, Collider:addPolygon(close_polygon_right(shapes[k]._polygon:unpack(), shapes[k + 9]._polygon:unpack())))
-
 			table.insert(save, Collider:addPolygon(x20, y20, x21, y21, x11, y11, x10, y10))
 			table.insert(save, Collider:addPolygon(x40, y40, x41, y41, x31, y31, x30, y30))
 			break
 		end
+		k = k + 1
 	end
 	return save
 end
 
 function love.update(dt)
-	mouse:moveTo(love.mouse.getPosition())
+	shapes.mouse:moveTo(love.mouse.getPosition())
 	save = get_collision()
 	-- pretty.dump(save)
 end
@@ -83,11 +81,11 @@ function love.draw()
 	-- end
 
 
-	mouse:draw("line")
-	love.graphics.rectangle("line", 225, 225, 150, 150)
-	love.graphics.line(225, 225, 0, 0)
-	love.graphics.line(375, 225, 600, 0)
-	love.graphics.line(225, 375, 0, 600)
-	love.graphics.line(375, 375, 600, 600)
+	shapes.mouse:draw("line")
+	love.graphics.rectangle("line", 187, 187, 75 * 3, 75 * 3)
+	-- love.graphics.line(262, 262, 0, 0)
+	-- love.graphics.line(375, 262, 600, 0)
+	-- love.graphics.line(262, 375, 0, 600)
+	-- love.graphics.line(375, 375, 600, 600)
 	love.graphics.print(love.timer.getFPS())
 end
