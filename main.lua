@@ -75,8 +75,19 @@ end
 
 function love.draw()
 	for k,v in pairs(save) do
-		v:draw('fill')
+		v:draw('line')
 	end
+
+	-- for k,v in pairs(shapes) do
+	-- 	v:draw('line')
+	-- end
+
+
 	mouse:draw("line")
+	love.graphics.rectangle("line", 225, 225, 150, 150)
+	love.graphics.line(225, 225, 0, 0)
+	love.graphics.line(375, 225, 600, 0)
+	love.graphics.line(225, 375, 0, 600)
+	love.graphics.line(375, 375, 600, 600)
 	love.graphics.print(love.timer.getFPS())
 end
