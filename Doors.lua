@@ -37,7 +37,7 @@ function Doors:build_major()
 		if i == 0 then
 			table.insert(grids, self:new_grid(self.size, love.window.getDimensions()))
 		else
-			table.insert(grids, self:new_grid(self.size, love.window.getWidth() - i * (self.depth_field / 10), love.window.getHeight() - i * (self.depth_field / 10)))
+			table.insert(grids, self:new_grid(self.size, love.window.getWidth() - i * (self.depth_field), love.window.getHeight() - i * (self.depth_field)))
 		end
 	end
 	return grids
@@ -53,18 +53,49 @@ function Doors:new(size, depth_field)
 	self.majorgrids = self:build_major()
 	self.minorgrids = {}
 	print("new end")
-	pretty.dump(self.majorgrids)
+	-- pretty.dump(self.majorgrids)
+end
+
+function Doors:get_collision()
+	local save = {}
+	local k = 1
+	local p = 1
+	-- local max = self.size * self.size
+	local max = self.size * self.size
+
+	-- print("table.getn(self.majorgrids[1])", table.getn(self.majorgrids[1]))
+
+	while p < self.size + 1 do
+		while k < table.getn(self.majorgrids[p]) + 1 do
+			if k + self.size < table.getn(self.majorgrids[p]) + 1 and self.majorgrids[p][k]:collidesWith(self.mouse) then
+			print("deladmere dd 	")
+				table.insert(save, self.majorgrids[p][k])
+				table.insert(save, self.majorgrids[p][k + self.size])
+
+				x10, y10, x20, y20, x30, y30, x40, y40 = self.majorgrids[p][k]._polygon:unpack()
+				x11, y11, x21, y21, x31, y31, x41, y41 = self.majorgrids[p + 1][k]._polygon:unpack()
+
+				table.insert(save, self.Collider:addPolygon(x20, y20, x21, y21, x11, y11, x10, y10))
+				table.insert(save, self.Collider:addPolygon(x40, y40, x41, y41, x31, y31, x30, y30))
+				break
+			end
+			k = k + 1
+		end
+		p = p + 1
+	end
+	pretty.dump(save)
+	return save
 end
 
 function Doors:update()
 	self.mouse:moveTo(love.mouse.getPosition())
-	self.todraw = {}
-	local k = 1
-	while k < table.getn(self.majorgrids) + 1 do
-		if k + self.size * self.size < table.getn(self.majorgrids) + 1
-		k = k + 1
-	end
-
+	-- local k = 1
+	-- while k < table.getn(self.majorgrids) + 1 do
+	-- 	if k + self.size * self.size < table.getn(self.majorgrids) + 1 then
+	-- 	k = k + 1
+	-- end
+-- end
+	self.todraw = self:get_collision()
 
 	if love.mouse.isDown("l") then
 		self.mode = "major"
@@ -86,6 +117,9 @@ function Doors:draw()
 			print(v)
 			love.graphics.draw('line', v:unpack())
 		end
+	end
+	for k,v in pairs(self.todraw) do
+		v:draw("fill")
 	end
 end
 

@@ -2,7 +2,7 @@ pretty = require 'pl.pretty'
 
 function love.load()
 	Doors = require 'Doors'
-	Doors:new(5, 1000)
+	Doors:new(4, 100)
 end
 
 function love.update(dt)
@@ -12,5 +12,4 @@ end
 function love.draw()
 	Doors:draw()
 end
-
 
