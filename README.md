@@ -8,4 +8,5 @@ sy = Scale factor (y-axis).<br>
 ox = Origin offset (x-axis).<br>
 oy = Origin offset (y-axis).<br>
 
-love.graphics.print( text, x, y, r, sx, sy, ox, oy, kx, ky )
+love.graphics.print( text, x, y, r, sx, sy, ox, oy)
+love.graphics.draw( drawable, x, y, r, sx, sy, ox, oy)
