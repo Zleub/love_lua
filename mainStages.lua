@@ -1,11 +1,18 @@
+pretty = require 'pl.pretty'
+
 function love.load()
 	Stage = require 'Stage'
-	Stage:new('stagetest')
-	print(Stage.Conf.key)
+	stagetest = Stage.new('stagetest')
+
+	print(pretty.write(Stage, "  ", true))
+	print("<-------------->")
+	print(pretty.write(stagetest, "  ", true))
 end
 
 function love.update(dt)
+	Stage.update(dt, stagetest)
 end
 
 function love.draw()
+	Stage.draw(stagetest)
 end
