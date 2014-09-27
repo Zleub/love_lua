@@ -18,7 +18,6 @@ function love.load()
 
 	map = require 'pokemap'
 	tilesets = map.tilesets
-
 	layers = map.layers
 
 	-- images = {}
@@ -42,12 +41,12 @@ function draw_map(layer)
 		i = 1
 		m = 0
 		while i <= layer.width do
-			love.graphics.draw(Quadtileset[0], Quadtileset[layer.data[k] ], m, n)
-			m = m + 15
+			love.graphics.draw(Quadtileset[0], Quadtileset[ layer.data[k] ], m, n)
+			m = m + 16
 			i = i + 1
 			k = k + 1
 		end
-		n = n + 15
+		n = n + 16
 		j = j + 1
 	end
 end
