@@ -11,6 +11,7 @@ function love.load()
 
 	Entities:new('player')
 	player = Entities.player
+
 	player.start_x = love.window.getWidth() / 2 - player.radius / 2
 	player.start_y = love.window.getHeight() / 2 - player.radius / 2
 	player.shape = Collider:addCircle(player.start_x, player.start_y, player.radius)
