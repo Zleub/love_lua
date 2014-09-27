@@ -3,21 +3,23 @@ return {
 		folder = "images/",
 		{
 			name = "background",
-			width = 600,
-			height = 600,
-			x = 0,
-			y = 0,
+			width = 560,
+			height = 560,
+			x = 20,
+			y = 20,
 			image = "images/Bedrock.png",
-			shape = "rectange"
+			shape = "rectange",
+			scaled = true
 		},
 		{
 			name = "logo",
-			width = 300,
-			height = 200,
-			x = 0,
-			y = 0,
+			width = 1500,
+			height = 50,
+			x = 100,
+			y = 100,
 			image = "images/Minecraft-logo.png",
-			shape = "rectange"
+			shape = "rectange",
+			scaled = false
 		}
 	}
 }
