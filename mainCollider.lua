@@ -14,7 +14,7 @@ function love.load()
 
 	player.start_x = love.window.getWidth() / 2 - player.radius / 2
 	player.start_y = love.window.getHeight() / 2 - player.radius / 2
-	player.shape = Collider:addCircle(player.start_x, player.start_y, player.radius)
+	player.shape = Collider:addRectangle(player.start_x, player.start_y, 10 ,10)
 
 	Entities:new('monster')
 	monster = Entities.monster
@@ -201,8 +201,9 @@ function love.draw()
 		-- love.graphics.print("test2: "..test2, 220, 220)
 	end
 
-	love.graphics.draw( player.frames[ math.floor(player.frames_cnt) ], player.shape_center_x - (player.frames_width / 2), player.shape_center_y - (player.frames_height / 2))
+	-- love.graphics.draw( player.frames[ math.floor(player.frames_cnt) ], player.shape_center_x - (player.frames_width / 2), player.shape_center_y - (player.frames_height / 2))
 
+	player.shape:draw()
 	monster.shape:draw()
 	love.graphics.print("mana: "..math.floor(mana), love.window.getWidth() - 100, 0)
 end
