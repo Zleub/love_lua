@@ -19,12 +19,12 @@ function spriteup(sprite_nbr, pixel_row)
 end
 
 function love.load()
-	sprite_timer = 0.5 -- in seconds
+	sprite_timer = 10 -- in seconds
 	sprite_nbr = 4 -- sprite in 1 animation
 	sprite_file = love.graphics.newImage("images/firetest.png")
 	sprite_size = 80
 
-	Quadlist = spriteup(12, 0)
+	Quadlist = spriteup(8, 0)
 	index = 1
 	sprite = Quadlist[index]
 
@@ -95,7 +95,8 @@ function love.update(dt)
 	-- 	end
 	-- end
 	timing = timing + dt * 10
-	if timing > 12 then
+	print(timing)
+	if timing > 9 then
 		timing = 1
 	end
 	sprite = Quadlist[math.floor(timing)]
