@@ -21,14 +21,14 @@ end
 function love.load()
 	sprite_timer = 0.5 -- in seconds
 	sprite_nbr = 4 -- sprite in 1 animation
-	sprite_file = love.graphics.newImage("images/spriteset.png")
-	sprite_size = 32
+	sprite_file = love.graphics.newImage("images/firetest.png")
+	sprite_size = 80
 
 	Quadlist = spriteup(12, 0)
-	index = 5
+	index = 1
 	sprite = Quadlist[index]
 
-	timing = 0
+	timing = 1
 	animate = 0
 	rate = 1
 end
@@ -68,32 +68,37 @@ function mappin()
 end
 
 function love.update(dt)
-	local duration = sprite_timer / 4
+	-- local duration = sprite_timer / 4
 
-	if animate == 0 then
-		mappin()
-		sprite = Quadlist[index]
-	else
-		if timing < sprite_timer then
-			if timing > 0 and timing < duration then
-				sprite = Quadlist[index]
-			end
-			if timing > duration and timing < duration * 2 then
-				sprite = Quadlist[index + 1]
-			end
-			if timing > duration * 2 and timing < duration * 3 then
-				sprite = Quadlist[index - 1]
-			end
-			if timing > duration * 3 and timing < sprite_timer then
-				sprite = Quadlist[index]
-			end
+	-- if animate == 0 then
+	-- 	mappin()
+	-- 	sprite = Quadlist[index]
+	-- else
+	-- 	if timing < sprite_timer then
+	-- 		if timing > 0 and timing < duration then
+	-- 			sprite = Quadlist[index]
+	-- 		end
+	-- 		if timing > duration and timing < duration * 2 then
+	-- 			sprite = Quadlist[index + 1]
+	-- 		end
+	-- 		if timing > duration * 2 and timing < duration * 3 then
+	-- 			sprite = Quadlist[index - 1]
+	-- 		end
+	-- 		if timing > duration * 3 and timing < sprite_timer then
+	-- 			sprite = Quadlist[index]
+	-- 		end
 
-			timing = timing + dt * rate
-		else
-			animate = 0
-			timing = 0
-		end
+	-- 		timing = timing + dt * rate
+	-- 	else
+	-- 		animate = 0
+	-- 		timing = 0
+	-- 	end
+	-- end
+	timing = timing + dt * 10
+	if timing > 12 then
+		timing = 1
 	end
+	sprite = Quadlist[math.floor(timing)]
 end
 
 function love.draw()
