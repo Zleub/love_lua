@@ -201,9 +201,9 @@ function love.draw()
 		-- love.graphics.print("test2: "..test2, 220, 220)
 	end
 
-	-- love.graphics.draw( player.frames[ math.floor(player.frames_cnt) ], player.shape_center_x - (player.frames_width / 2), player.shape_center_y - (player.frames_height / 2))
+	love.graphics.draw( player.frames[ math.floor(player.frames_cnt) ], player.shape_center_x - (player.frames_width / 2), player.shape_center_y - (player.frames_height / 2))
 
-	player.shape:draw()
+	-- player.shape:draw()
 	monster.shape:draw()
 	love.graphics.print("mana: "..math.floor(mana), love.window.getWidth() - 100, 0)
 end

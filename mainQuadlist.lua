@@ -16,14 +16,19 @@ function love.load()
 	pretty = require 'pl.pretty'
 	tablex = require 'pl.tablex'
 
-	map = require 'pokemap2'
+	map = require 'map_test'
 	tilesets = map.tilesets
 	layers = map.layers
 
 	-- images = {}
 	-- tablex.foreach(map.tilesets, load_tilesets)
 	Quadlist_mod = require 'Quadlist'
+
+	pretty.dump(Quadlist_mod)
+
 	Quadtileset = Quadlist:new(tilesets[1])
+
+	pretty.dump(Quadtileset)
 
 end
 
