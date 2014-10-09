@@ -73,12 +73,12 @@ end
 
 function love.draw()
 	for k,v in pairs(save) do
-		v:draw('fill')
-	end
-
-	for k,v in pairs(shapes) do
 		v:draw('line')
 	end
+
+	-- for k,v in pairs(shapes) do
+	-- 	v:draw('line')
+	-- end
 
 
 	shapes.mouse:draw("line")

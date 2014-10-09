@@ -19,7 +19,7 @@ function spriteup(sprite_nbr, pixel_row)
 end
 
 function love.load()
-	sprite_timer = 2 -- in seconds
+	sprite_timer = 0.5 -- in seconds
 	sprite_nbr = 4 -- sprite in 1 animation
 	sprite_file = love.graphics.newImage("images/spriteset.png")
 	sprite_size = 32
