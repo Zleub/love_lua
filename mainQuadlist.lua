@@ -16,7 +16,7 @@ function love.load()
 	pretty = require 'pl.pretty'
 	tablex = require 'pl.tablex'
 
-	map = require 'pokemap'
+	map = require 'pokemap2'
 	tilesets = map.tilesets
 	layers = map.layers
 

@@ -18,13 +18,8 @@ function Stage.draw(stage)
 	for k, v in pairs(stage.images) do
 		img_width, img_height = stage.images[k]:getDimensions()
 
-		if stage.data[k].width and stage.data[k].height then
-			scale_x = img_width / stage.data[k].width
-			scale_y = img_height / stage.data[k].height
-		else
-			scale_x = img_width / (stage.winwidth - stage.data[k].x)
-			scale_y = img_height / (stage.winheight - stage.data[k].y)
-		end
+		scale_x = img_width / stage.data[k].width
+		scale_y = img_height / stage.data[k].height
 
 		scale_1 = img_width / stage.winwidth
 		scale_2 = img_height / stage.winheight
@@ -40,7 +35,7 @@ function Stage.draw(stage)
 
 		if stage.data[k].scaled == true then
 			love.graphics.draw(stage.images[k], stage.data[k].x, stage.data[k].y, 0,
-				1 / (scale_x * scale_1), 1 / (scale_y * scale_2) )
+				1 / (scale_1), 1 / (scale_2) )
 		else
 			love.graphics.draw(stage.images[k], stage.data[k].x, stage.data[k].y, 0,
 				1 / (scale_x), 1 / (scale_y) )
