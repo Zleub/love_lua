@@ -6,10 +6,10 @@ function spriteup(sprite_nbr, pixel_row)
 		table.insert(
 			Quadlist,
 			love.graphics.newQuad(
-				0 + i * sprite_size,
+				0 + i * sprite_width,
 				pixel_row,
-				sprite_size,
-				sprite_size,
+				sprite_width,
+				sprite_height,
 				sprite_file:getDimensions()
 			)
 		)
@@ -19,12 +19,14 @@ function spriteup(sprite_nbr, pixel_row)
 end
 
 function love.load()
-	sprite_timer = 10 -- in seconds
+	sprite_timer = 5 -- in seconds
 	sprite_nbr = 4 -- sprite in 1 animation
 	sprite_file = love.graphics.newImage("images/firetest.png")
-	sprite_size = 80
+	sprite_width = 128
+	sprite_height = 80
 
-	Quadlist = spriteup(8, 0)
+	Quadlist = spriteup(100, 0)
+	monster = spriteup(100, 80)
 	index = 1
 	sprite = Quadlist[index]
 
@@ -96,7 +98,7 @@ function love.update(dt)
 	-- end
 	timing = timing + dt * 10
 	print(timing)
-	if timing > 9 then
+	if timing > 16 then
 		timing = 1
 	end
 	sprite = Quadlist[math.floor(timing)]
@@ -113,4 +115,11 @@ function love.draw()
 		x,
 		y
 	)
+	love.graphics.draw(
+		sprite_file,
+		monster[1],
+		x,
+		y
+	)
+
 end

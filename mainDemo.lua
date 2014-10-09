@@ -72,6 +72,7 @@ function love.update(dt)
 end
 
 function love.draw()
+	love.graphics.setDefaultFilter('nearest', 'nearest')
 	for k,v in pairs(save) do
 		v:draw('line')
 	end
