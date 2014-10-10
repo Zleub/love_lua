@@ -25,8 +25,8 @@ function love.load()
 	sprite_width = 128
 	sprite_height = 80
 
-	Quadlist = spriteup(100, 0)
-	monster = spriteup(100, 80)
+	Quadlist = spriteup(16, 0)
+	monster = spriteup(1, 80)
 	index = 1
 	sprite = Quadlist[index]
 
@@ -98,7 +98,7 @@ function love.update(dt)
 	-- end
 	timing = timing + dt * 10
 	print(timing)
-	if timing > 16 then
+	if timing > 16 + 1 then
 		timing = 1
 	end
 	sprite = Quadlist[math.floor(timing)]
@@ -108,7 +108,6 @@ function love.draw()
 	local x = 0
 	local y = 0
 
-	love.graphics.scale(2, 2)
 	love.graphics.draw(
 		sprite_file,
 		sprite,
