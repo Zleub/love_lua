@@ -19,13 +19,15 @@ function spriteup(sprite_nbr, pixel_row)
 end
 
 function love.load()
+	love.graphics.setDefaultFilter('nearest', 'nearest')
+
 	sprite_timer = 5 -- in seconds
 	sprite_nbr = 4 -- sprite in 1 animation
 	sprite_file = love.graphics.newImage("images/firetest.png")
 	sprite_width = 128
 	sprite_height = 80
 
-	Quadlist = spriteup(16, 0)
+	Quadlist = spriteup(16, 160)
 	monster = spriteup(1, 80)
 	index = 1
 	sprite = Quadlist[index]
@@ -96,7 +98,7 @@ function love.update(dt)
 	-- 		timing = 0
 	-- 	end
 	-- end
-	timing = timing + dt * 10
+	timing = timing + dt * 8
 	print(timing)
 	if timing > 16 + 1 then
 		timing = 1
@@ -108,6 +110,7 @@ function love.draw()
 	local x = 0
 	local y = 0
 
+	love.graphics.scale(2, 2)
 	love.graphics.draw(
 		sprite_file,
 		sprite,
