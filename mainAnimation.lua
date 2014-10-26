@@ -19,15 +19,13 @@ function spriteup(sprite_nbr, pixel_row)
 end
 
 function love.load()
-	love.graphics.setDefaultFilter('nearest', 'nearest')
-
 	sprite_timer = 0.2 -- in seconds
 	sprite_nbr = 4 -- sprite in 1 animation
-	sprite_file = love.graphics.newImage("images/sprites.png")
+	sprite_file = love.graphics.newImage("images/test render.png")
 	sprite_width = 32
 	sprite_height = 32
 
-	Quadlist = spriteup(12, 15200)
+	Quadlist = spriteup(12, 31 + 128)
 	-- monster = spriteup(1, 80)
 	index = 1
 	sprite = Quadlist[index]
@@ -111,11 +109,21 @@ function love.draw()
 	local x = 0
 	local y = 0
 
-	love.graphics.scale(2, 2)
+	love.graphics.scale(8, 8)
+
+	sprite_file:setFilter('linear')
 	love.graphics.draw(
 		sprite_file,
 		sprite,
 		x,
+		y
+	)
+
+	sprite_file:setFilter('nearest')
+	love.graphics.draw(
+		sprite_file,
+		sprite,
+		x + 64,
 		y
 	)
 	-- love.graphics.draw(
