@@ -1,91 +1,75 @@
-pretty = require 'pl.pretty'
-
-function Quadlist(tileset)
-	local i = 0
-	local j = 0
-	local Quadlist = {}
-
-	Quadlist[0] = love.graphics.newImage(tileset.image)
-	while j < tileset.imageheight do
-		i = 0
-		while i < tileset.imagewidth do
-			table.insert(Quadlist,
-				love.graphics.newQuad(i, j, tileset.tilewidth, tileset.tileheight,
-					tileset.imagewidth, tileset.imageheight))
-			i = i + tileset.tilewidth
-		end
-		j = j + tileset.tileheight
-	end
-
-	return Quadlist
-end
-
-function draw_isolayer(quads, map)
-	local i
-	local j
-	local k
-
-	local m
-	local n
-
-	k = 1
-	j = 0
-	while j < map.layer.height do
-		i = 1
-		m = love.window.getWidth() / 2 - (map.tilesets[1].tilewidth / 2) * (j + 1)
-		n = 0 + (map.tilesets[1].tileheight / 2) * (j + 1)
-
-		while i <= map.layer.width do
-			if map.layer.data[k] ~= 0 then
-				-- love.graphics.draw(quads[0], quads[ map.layer.data[k] ], m, n, 0)
-				love.graphics.draw(quads[0], quads[ 1 ], m, n, 0)
-				love.graphics.draw(quads[0], quads[ 2 ], m, n, 0)
-				love.graphics.draw(quads[0], quads[ 3 ], m, n, 0)
-				love.graphics.draw(quads[0], quads[ 4 ], m, n, 0)
-			end
-			m = m + map.tilesets[1].tilewidth / 2
-			n = n + map.tilesets[1].tileheight / 2
-			i = i + 1
-			k = k + 1
-		end
-		j = j + 1
-	end
-end
-
 function love.load()
+   lg = love.graphics
+   li = love.image
+   lf = love.filesystem
+   w,h = lg.getWidth(),lg.getHeight()
 
-	map = {
-		tilesets = {
-			{
-				image = 'images/tilemath/test1.png',
-				tilewidth = 128,
-				tileheight = 64,
-				imagewidth = 512,
-				imageheight = 256
-			}
-		},
-		layer = {
-			width = 5,
-			height = 5,
-			data = {
-				2, 2, 2, 2, 2,
-				2, 2, 2, 2, 2,
-				2, 2, 2, 2, 2,
-				2, 2, 2, 2, 2,
-				2, 2, 2, 2, 2
-			}
-		}
-	}
+   transitions = lf.getDirectoryItems('transitions')
 
-	quads = Quadlist(map.tilesets[1])
+   transIndex = 1
+   transition = lg.newImage('transitions/' .. transitions[transIndex])
+
+   image = lg.newImage('test.jpg')
+
+   effect = lg.newShader [[
+      extern Image trans;
+      extern number time;
+      extern number duration;
+      vec4 effect(vec4 color,Image tex,vec2 tc,vec2 pc)
+      {
+         vec4 img_color = Texel(tex,tc);
+         vec4 trans_color = Texel(trans,tc);
+         number white_level   = (trans_color.r + trans_color.b + trans_color.b)/3;
+         number max_white   = time/duration;
+
+         if (white_level <= max_white)
+         {
+            return img_color;
+         }
+
+         img_color.a = 0;
+         return img_color;
+      }
+   ]]
+
+   t = 0
+   duration = 1
+   effect:send("duration",duration)
+   effect:send("trans",transition)
+
+   canvas = lg.newCanvas(lg.getWidth(),lg.getHeight())
+   canvas:renderTo(function() lg.draw(image) end)
+end
+function love.update(dt)
+   t = t + dt
+   effect:send("time",t)
 end
 
-function love.update(dt)
+function love.keypressed(key)
+   if key == 'r' then
+      t = 0
+   end
+
+   if key == 'left' or key == 'right' then
+      if key == 'left' then
+         if transIndex >=2 then
+            transIndex = transIndex - 1
+         end
+      elseif key == 'right' then
+         if transIndex <= #transitions-1 then
+            transIndex = transIndex + 1
+         end
+      end
+      transition = lg.newImage('transitions/' .. transitions[transIndex])
+      effect:send("trans",transition)
+      t = 0
+   end
 end
 
 function love.draw()
-	-- quads[0]:setFilter('nearest')
-
-	love.graphics.rectangle("fill", 0, 0, love.window.getWidth(), love.window.getHeight())
-	draw_isolayer(quads, map)
+   lg.setShader(effect)
+   lg.draw(image)
+   lg.setShader()
+   lg.print(love.timer.getFPS(),lg.getWidth()-30,10)
+   lg.print(transitions[transIndex],10,10)
 end
