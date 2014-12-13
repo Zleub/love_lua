@@ -1,75 +1,128 @@
+function spriteup(sprite_nbr, pixel_row)
+	local Quadlist = {}
+	local i = 0
+
+	while i ~= sprite_nbr do
+		table.insert(
+			Quadlist,
+			love.graphics.newQuad(
+				0 + i * sprite_width,
+				pixel_row,
+				sprite_width,
+				sprite_height,
+				sprite_file:getDimensions()
+			)
+		)
+		i = i + 1
+	end
+	return Quadlist
+end
+
 function love.load()
-   lg = love.graphics
-   li = love.image
-   lf = love.filesystem
-   w,h = lg.getWidth(),lg.getHeight()
+	love.graphics.setDefaultFilter('nearest', 'nearest')
 
-   transitions = lf.getDirectoryItems('transitions')
+	sprite_timer = 0.2 -- in seconds
+	sprite_nbr = 4 -- sprite in 1 animation
+	sprite_file = love.graphics.newImage("images/sprites.png")
+	sprite_width = 32
+	sprite_height = 32
 
-   transIndex = 1
-   transition = lg.newImage('transitions/' .. transitions[transIndex])
+	Quadlist = spriteup(12, 15200)
+	-- monster = spriteup(1, 80)
+	index = 1
+	sprite = Quadlist[index]
 
-   image = lg.newImage('test.jpg')
-
-   effect = lg.newShader [[
-      extern Image trans;
-      extern number time;
-      extern number duration;
-      vec4 effect(vec4 color,Image tex,vec2 tc,vec2 pc)
-      {
-         vec4 img_color = Texel(tex,tc);
-         vec4 trans_color = Texel(trans,tc);
-         number white_level   = (trans_color.r + trans_color.b + trans_color.b)/3;
-         number max_white   = time/duration;
-
-         if (white_level <= max_white)
-         {
-            return img_color;
-         }
-
-         img_color.a = 0;
-         return img_color;
-      }
-   ]]
-
-   t = 0
-   duration = 1
-   effect:send("duration",duration)
-   effect:send("trans",transition)
-
-   canvas = lg.newCanvas(lg.getWidth(),lg.getHeight())
-   canvas:renderTo(function() lg.draw(image) end)
+	timing = 1
+	animate = 0
+	rate = 1
 end
+
+function mappin()
+	if love.keyboard.isDown("left") then
+		if index ~= 8 then
+			index = 8
+		else
+			animate = 1
+		end
+	end
+
+	if love.keyboard.isDown("right") then
+		if index ~= 11 then
+			index = 11
+		else
+			animate = 1
+		end
+	end
+
+	if love.keyboard.isDown("up") then
+		if index ~= 2 then
+			index = 2
+		else
+			animate = 1
+		end
+	end
+
+	if love.keyboard.isDown("down") then
+		if index ~= 5 then
+			index = 5
+		else
+			animate = 1
+		end
+	end
+end
+
 function love.update(dt)
-   t = t + dt
-   effect:send("time",t)
-end
+	local duration = sprite_timer / 4
 
-function love.keypressed(key)
-   if key == 'r' then
-      t = 0
-   end
+	if animate == 0 then
+		mappin()
+		sprite = Quadlist[index]
+	else
+		if timing < sprite_timer then
+			if timing > 0 and timing < duration then
+				sprite = Quadlist[index]
+			end
+			if timing > duration and timing < duration * 2 then
+				sprite = Quadlist[index + 1]
+			end
+			if timing > duration * 2 and timing < duration * 3 then
+				sprite = Quadlist[index - 1]
+			end
+			if timing > duration * 3 and timing < sprite_timer then
+				sprite = Quadlist[index]
+			end
 
-   if key == 'left' or key == 'right' then
-      if key == 'left' then
-         if transIndex >=2 then
-            transIndex = transIndex - 1
-         end
-      elseif key == 'right' then
-         if transIndex <= #transitions-1 then
-            transIndex = transIndex + 1
-         end
-      end
-      transition = lg.newImage('transitions/' .. transitions[transIndex])
-      effect:send("trans",transition)
-      t = 0
-   end
+			timing = timing + dt * rate
+		else
+			animate = 0
+			timing = 0
+		end
+	end
+
+	-- timing = timing + dt
+	-- print(timing)
+	-- if timing > 16 + 1 then
+	-- 	timing = 1
+	-- end
+	-- sprite = Quadlist[math.floor(timing)]
 end
 
 function love.draw()
-   lg.setShader(effect)
-   lg.draw(image)
-   lg.setShader()
-   lg.print(love.timer.getFPS(),lg.getWidth()-30,10)
-   lg.print(transitions[transIndex],10,10)
+	local x = 0
+	local y = 0
+
+	love.graphics.scale(2, 2)
+	love.graphics.draw(
+		sprite_file,
+		sprite,
+		x,
+		y
+	)
+	-- love.graphics.draw(
+	-- 	sprite_file,
+	-- 	monster[1],
+	-- 	x,
+	-- 	y
+	-- )
+
 end
